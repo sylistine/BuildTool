@@ -19,3 +19,5 @@ All classes are stored in the Djn (Pronounced "Jihn" as in Djinn) namespace.
 6b (player)) Click build and select a destination for your build
 7) Call `Application.Init()`, and then access build data through `UnityEngine.SceneManagement.SceneManager.LoadScene` and `Application.BuildData.Levels[int].Data.MainScene.Path`*
    * this is verbose and I'm looking for way to shorten it. Perhaps with `Application.BuildData.Levels[int].Load()` ?
+
+Commandline build commands should be created on a per-app basis.
