@@ -7,6 +7,8 @@ Likewise defines a build target as a named collection of levels with a single en
 Build data (build name, level names and their scene dependencies) is built into asset bundles.
 The asset bundles can be enabled in the editor, and will be built and copied to builds.
 
+All classes are stored in the Djn (Pronounced "Jihn" as in Djinn) namespace.
+
 ## Usage
 1) Create a Level asset somewhere that makes sense for your scene collection.
 2) Add scenes from your collection to the Level asset.
