@@ -35,10 +35,8 @@ After creating a new build target...
 3. The `Djn.Scene` class can then be used to store serialized scene references. Unity's SceneManager can load a `Djn.Scene` automatically, so use these for **intra-level** scene loading.
 4. Add your Level asset references to your build target (a single Level asset can be used on multiple targets)
 5.
-  a. (editor) Enable your build target by clicking "Enable Target" in the build window. The editor's Scene list will populate and AssetBundles will be generated
-  
-  b. (player) Click build and select a destination for your build
-  * build meta data is referenced by loading an asset bundle at the `Application.StreamingAssets` path. The path is different for editor and for builds, but the tool handles this automatically.
+  - (editor) Enable your build target by clicking "Enable Target" in the build window. The editor's Scene list will populate and AssetBundles will be generated
+  - (player) Click build and select a destination for your build
 6. Call `Application.Init()`, and then access build data through `UnityEngine.SceneManagement.SceneManager.LoadScene` and `Application.BuildData.Levels[int].MainScene.`.
 
 Commandline build commands should be created on a per-app basis.
