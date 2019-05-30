@@ -11,7 +11,8 @@ namespace Djn.Builds {
             if (string.IsNullOrWhiteSpace(buildTargetName.stringValue)) {
                 buildTargetName.stringValue = "Build Target";
             }
-            var startupLevelName = _buildData.FindProperty("_startupLevel").FindPropertyRelative("_name");
+            var startupLevel = new SerializedObject(_buildData.FindProperty("_startupLevel").objectReferenceValue);
+            var startupLevelName = startupLevel.FindProperty("_name");
             if (string.IsNullOrWhiteSpace(startupLevelName.stringValue)) {
                 startupLevelName.stringValue = "Startup Scene";
                 _buildData.ApplyModifiedProperties();
@@ -20,9 +21,10 @@ namespace Djn.Builds {
 
         public void OnGUI(Rect position) {
             var nameProp = _buildData.FindProperty("_name");
-            var startupLevelProp = _buildData.FindProperty("_startupLevel");
-            var levelDataListProp = _buildData.FindProperty("_levelDataList").
-                FindPropertyRelative("_data");
+            var startupLevelSerialized = new SerializedObject(
+                _buildData.FindProperty("_startupLevel").objectReferenceValue);
+            var levelDataListProp =
+                _buildData.FindProperty("_levelDataList").FindPropertyRelative("_data");
 
             // General details column.
             EditorGUI.BeginChangeCheck();
@@ -40,36 +42,35 @@ namespace Djn.Builds {
             levelsListPosition.y += namePosition.height;
             levelListGUI.OnGUI(levelsListPosition);
 
+            // Level details column.
             var levelDetailsColumn = position;
             levelDetailsColumn.width -= generalDataColumnWidth;
             levelDetailsColumn.x += generalDataColumnWidth;
-            var levelWindowRect = DrawLevelDetails(levelDetailsColumn, startupLevelProp);
+            var levelWindowRect = DrawLevelDetails(
+                levelDetailsColumn,
+                startupLevelSerialized,
+                new GUIContent("Startup Level"));
 
             if(EditorGUI.EndChangeCheck()) {
                 _buildData.ApplyModifiedProperties();
             }
-
-            // Level details column.
+            
             for(var i = 0; i < levelDataListProp.arraySize; ++i) {
                 var levelDataElement = levelDataListProp.GetArrayElementAtIndex(i).objectReferenceValue;
                 if(levelDataElement == null) continue;
 
                 var levelObject = new SerializedObject(levelDataElement);
-                var levelProp = levelObject.FindProperty("_level");
 
-                EditorGUI.BeginChangeCheck();
-                if (levelProp != null) {
+                if (levelObject != null) {
                     levelWindowRect.y += levelWindowRect.height + 2f;
-                    levelWindowRect = DrawLevelDetails(levelWindowRect, levelProp);
-                }
-                if (EditorGUI.EndChangeCheck()) {
-                    levelObject.ApplyModifiedProperties();
+                    levelWindowRect = DrawLevelDetails(levelWindowRect, levelObject);
                 }
             }
         }
 
-        private Rect DrawLevelDetails(Rect rect, SerializedProperty prop) {
-            rect.height = EditorGUI.GetPropertyHeight(prop) + 6f;
+        // Just boxes the default GUI for LevelData.
+        private Rect DrawLevelDetails(Rect rect, SerializedObject so, GUIContent label = null) {
+            rect.height = LevelDataEditor.GetPropertyHeight(so, label) + 6f;
             var contentRect = rect;
             contentRect.width -= 6f;
             contentRect.height -= 6f;
@@ -77,7 +78,7 @@ namespace Djn.Builds {
             contentRect.y += 3f;
 
             GUI.Box(rect, GUIContent.none);
-            EditorGUI.PropertyField(contentRect, prop);
+            LevelDataEditor.OnGUI(contentRect, so, label);
             return rect;
         }
     }

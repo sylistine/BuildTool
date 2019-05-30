@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2250879247
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: builddata
+      Dependencies: {}

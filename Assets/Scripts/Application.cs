@@ -3,8 +3,9 @@ using UnityEngine;
 using Djn.Builds;
 
 namespace Djn {
-    // Make singleton?
-    // Regular monobehaviour?
+    /// <summary>
+    /// Class takes care of build data asset loading. Serves as a one-stop-shop for accessing info about levels currently built into the app.
+    /// </summary>
     public static class Application {
         private static bool _inited = false;
         private static AssetBundle _buildDataBundle;

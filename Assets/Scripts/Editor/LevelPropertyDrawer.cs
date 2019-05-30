@@ -2,60 +2,63 @@
 using UnityEditor;
 
 namespace Djn.Builds {
-    [CustomPropertyDrawer(typeof(Level))]
-    public class LevelPropertyDrawer : PropertyDrawer {
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-            // Property label, level name, main scene, and subscene list add button rows.
-            var height = 3f * EditorGUIUtility.singleLineHeight;
+    public class LevelDataEditor {
+        public static float GetPropertyHeight(SerializedObject serializedObject, GUIContent label = null) {
+            // level name, main scene, and subscene list add button rows.
+            var height = (label != null ? 3f : 2f) * EditorGUIUtility.singleLineHeight;
 
             var subSceneProp =
-                property.FindPropertyRelative("_subScenes").FindPropertyRelative("_scenes");
+                serializedObject.FindProperty("_subScenes").FindPropertyRelative("_scenes");
             var subScenePropHeight = (subSceneProp.arraySize + 1f) * EditorGUIUtility.singleLineHeight;
             height += subScenePropHeight;
 
             return height;
         }
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-            EditorGUI.BeginProperty(position, label, property);
+        public static void OnGUI(Rect position, SerializedObject serializedObject, GUIContent label = null) {
+            EditorGUI.BeginChangeCheck();
+            var levelNameProperty = serializedObject.FindProperty("_name");
+            var mainSceneProperty = serializedObject.FindProperty("_mainScene");
 
-            var levelNameProperty = property.FindPropertyRelative("_name");
-            var mainSceneProperty = property.FindPropertyRelative("_mainScene");
+            var currentRect = position;
+            currentRect.width = 0f;
+            currentRect.height = 0f;
 
-            // Property field header.
-            var headerPosition = position;
-            headerPosition.height = EditorGUIUtility.singleLineHeight;
-            EditorGUI.LabelField(headerPosition, label);
+            if (label != null) {
+                currentRect.height = EditorGUIUtility.singleLineHeight;
+                currentRect.width = position.width;
+                EditorGUI.LabelField(currentRect, label);
+            }
 
             // Level name.
-            var namePosition = headerPosition;
-            namePosition.y += headerPosition.height;
-            EditorGUI.PropertyField(namePosition, levelNameProperty, new GUIContent("Level Name"));
+            currentRect.x = position.x;
+            currentRect.y += currentRect.height;
+            currentRect.width = position.width;
+            currentRect.height = EditorGUIUtility.singleLineHeight;
+            EditorGUI.PropertyField(currentRect, levelNameProperty, new GUIContent("Level Name"));
 
             // Main scene.
-            var mainScenePosition = namePosition;
-            mainScenePosition.y += namePosition.height;
-            EditorGUI.PropertyField(mainScenePosition, mainSceneProperty, new GUIContent("Main Scene"));
+            currentRect.y += currentRect.height;
+            EditorGUI.PropertyField(currentRect, mainSceneProperty, new GUIContent("Main Scene"));
 
             // SubScene List area.
             var subSceneProp =
-                property.FindPropertyRelative("_subScenes").FindPropertyRelative("_scenes");
+                serializedObject.FindProperty("_subScenes").FindPropertyRelative("_scenes");
 
-            var subSceneArrayPosition = mainScenePosition;
-            subSceneArrayPosition.y += mainScenePosition.height;
+            currentRect.y += currentRect.height;
 
-            var subSceneArrayLabelPosition = subSceneArrayPosition;
+            var subSceneArrayLabelPosition = currentRect;
             subSceneArrayLabelPosition.width = EditorGUIUtility.labelWidth;
             EditorGUI.LabelField(subSceneArrayLabelPosition, new GUIContent("Sub Scenes"));
 
-            var subSceneArrayAddButtonPosition = subSceneArrayPosition;
+            var subSceneArrayAddButtonPosition = currentRect;
             subSceneArrayAddButtonPosition.width -= EditorGUIUtility.labelWidth;
             subSceneArrayAddButtonPosition.x += EditorGUIUtility.labelWidth;
             if(GUI.Button(subSceneArrayAddButtonPosition, new GUIContent("+"))) {
                 subSceneProp.InsertArrayElementAtIndex(subSceneProp.arraySize);
             }
 
-            var subSceneArrayElementPosition = subSceneArrayPosition;
+            var subSceneArrayElementPosition = currentRect;
             subSceneArrayElementPosition.width -= EditorGUIUtility.singleLineHeight;
             var xButtonPosition = subSceneArrayElementPosition;
             xButtonPosition.x += subSceneArrayElementPosition.width;
@@ -68,8 +71,9 @@ namespace Djn.Builds {
                     subSceneProp.DeleteArrayElementAtIndex(i);
                 }
             }
-
-            EditorGUI.EndProperty();
+            if(EditorGUI.EndChangeCheck()) {
+                serializedObject.ApplyModifiedProperties();
+            }
         }
     }
 }

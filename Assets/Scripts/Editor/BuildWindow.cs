@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 namespace Djn.Builds {
     public class BuildWindow : EditorWindow {
+        private const string NewBuildDataPath = "Assets/Settings/BuildData/BuildData.asset";
+        private const string DefaultLevelPath = "Assets/Settings/BuildData/DefaultStartupScene.asset";
         //private float lineHeight = 12f;
         //private float headerHeight = 14f;
 
@@ -14,10 +16,26 @@ namespace Djn.Builds {
             var window = EditorWindow.GetWindow<BuildWindow>();
             window.titleContent = new GUIContent("Build");
         }
-        
+
         private Vector2 _scrollPosition;
         private int _currentBuildDataIdx = 0;
         private BuildData[] _buildData;
+
+        private void Awake() {
+            if(!AssetDatabase.IsValidFolder("Assets/Settings"))
+                AssetDatabase.CreateFolder("Assets", "Settings");
+            if(!AssetDatabase.IsValidFolder("Assets/Settings/BuildData"))
+                AssetDatabase.CreateFolder("Assets/Settings", "BuildData");
+
+            // Create default level asset if it doesn't exist.
+            if(AssetDatabase.LoadAssetAtPath<LevelData>(DefaultLevelPath) != null) return;
+            var newLevel = CreateInstance<LevelData>();
+            AssetDatabase.CreateAsset(newLevel, DefaultLevelPath);
+            AssetDatabase.SaveAssets();
+            var serializedLevel = new SerializedObject(newLevel);
+            serializedLevel.FindProperty("_name").stringValue = "Default Startup Level";
+            serializedLevel.ApplyModifiedProperties();
+        }
 
         private void OnGUI() {
             RefreshBuildDataReferences();
@@ -139,18 +157,18 @@ namespace Djn.Builds {
         }
 
         private void CreateNewBuildData() {
-            if (!AssetDatabase.IsValidFolder("Assets/Settings"))
-                AssetDatabase.CreateFolder("Assets", "Settings");
-            if (!AssetDatabase.IsValidFolder("Assets/Settings/BuildData"))
-                AssetDatabase.CreateFolder("Assets/Settings", "BuildData");
-
             var newBuildData = CreateInstance<BuildData>();
 
-            var assetPath = AssetDatabase.GenerateUniqueAssetPath("Assets/Settings/BuildData/BuildData.asset");
+            var assetPath = AssetDatabase.GenerateUniqueAssetPath(NewBuildDataPath);
             AssetDatabase.CreateAsset(newBuildData, assetPath);
             AssetDatabase.SaveAssets();
+
+            var serializedBuildData = new SerializedObject(newBuildData);
+            var defaultLevel = AssetDatabase.LoadAssetAtPath<LevelData>(DefaultLevelPath);
+            serializedBuildData.FindProperty("_startupLevel").objectReferenceValue = defaultLevel;
+            serializedBuildData.ApplyModifiedProperties();
         }
-        
+
         private void RefreshBuildDataReferences() {
             var buildDataFiles = AssetDatabase.FindAssets("BuildData");
 

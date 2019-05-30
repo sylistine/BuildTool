@@ -14,6 +14,6 @@ public class TestLoader : MonoBehaviour
     private void Start() {
         var buildData = Application.BuildData;
         if (buildData.LevelDatas.Length > 0)
-            SceneManager.LoadScene(buildData.LevelDatas[0].Data.MainScene);
+            SceneManager.LoadScene(buildData.LevelDatas[0].MainScene);
     }
 }

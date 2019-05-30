@@ -6,11 +6,11 @@ using UnityEngine;
 namespace Djn.Builds {
     public class BuildData : ScriptableObject {
         [SerializeField] private string _name = "NewBuildTarget";
-        [SerializeField] private Level _startupLevel;
+        [SerializeField] private LevelData _startupLevel;
         [SerializeField] private LevelDataList _levelDataList;
 
         public string Name => _name;
-        public Level StartupLevel => _startupLevel;
+        public LevelData StartupLevel => _startupLevel;
         public LevelDataList LevelDatas => _levelDataList;
 
         public bool IsValid {
@@ -21,8 +21,8 @@ namespace Djn.Builds {
                     return false;
 
                 foreach(var level in LevelDatas) {
-                    if(string.IsNullOrEmpty(level.Data.MainScene.Path)) return false;
-                    foreach(var scene in level.Data.SubScenes) if(string.IsNullOrEmpty(scene.Path))
+                    if(string.IsNullOrEmpty(level.MainScene.Path)) return false;
+                    foreach(var scene in level.SubScenes) if(string.IsNullOrEmpty(scene.Path))
                         return false;
                 }
 
@@ -40,8 +40,8 @@ namespace Djn.Builds {
                 }
 
                 foreach(var level in LevelDatas) {
-                    if(!sceneList.Contains(level.Data.MainScene)) sceneList.Add(level.Data.MainScene);
-                    foreach(var scene in level.Data.SubScenes) if(!sceneList.Contains(scene))
+                    if(!sceneList.Contains(level.MainScene)) sceneList.Add(level.MainScene);
+                    foreach(var scene in level.SubScenes) if(!sceneList.Contains(scene))
                             sceneList.Add(scene);
                 }
                 return sceneList;

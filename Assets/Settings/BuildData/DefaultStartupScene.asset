@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc79209339bdb3b4a95cc25b35049fdc, type: 3}
-  m_Name: BuildData
+  m_Script: {fileID: 11500000, guid: 7d8a84d061cae11449c82f5e7397816b, type: 3}
+  m_Name: DefaultStartupScene
   m_EditorClassIdentifier: 
-  _name: NewBuildTarget
-  _startupLevel: {fileID: 11400000, guid: f6d2aa95836564647b9d7c127ce2ba50, type: 2}
-  _levelDataList:
-    _data: []
+  _name: Default Startup Level
+  _mainScene:
+    _guid: 228b885575b66d04db049fd976fa9b6e
+    _path: Assets/Scenes/Startup.unity
+  _subScenes:
+    _scenes: []

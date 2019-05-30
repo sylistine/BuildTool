@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8a84d061cae11449c82f5e7397816b, type: 3}
   m_Name: Level1Data
   m_EditorClassIdentifier: 
-  _level:
-    _name: Level 1
-    _mainScene:
-      _guid: 7832ef5cb7582fd41b2f64fee317991c
-      _path: Assets/Scenes/Level1.unity
-    _subScenes:
-      _scenes: []
+  _name: Level 1
+  _mainScene:
+    _guid: 7832ef5cb7582fd41b2f64fee317991c
+    _path: Assets/Scenes/Level1.unity
+  _subScenes:
+    _scenes: []

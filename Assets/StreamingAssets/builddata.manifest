@@ -1,0 +1,21 @@
+ManifestFileVersion: 0
+CRC: 4021948302
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 75381c3716f834f19185efe9a4b128a9
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7a71e70bf3906c13da7f04d2fd19d2e2
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: 7d8a84d061cae11449c82f5e7397816b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bc79209339bdb3b4a95cc25b35049fdc, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/Settings/BuildData/BuildData 1.asset
+- Assets/Scenes/Level2Data.asset
+Dependencies: []
