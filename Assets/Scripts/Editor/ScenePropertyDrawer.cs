@@ -10,6 +10,7 @@ namespace Djn.Builds {
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             EditorGUI.BeginProperty(position, label, property);
+
             var guidPropertyName = "_guid";
             var pathPropertyName = "_path";
             var guid = property.FindPropertyRelative(guidPropertyName).stringValue;
@@ -24,20 +25,17 @@ namespace Djn.Builds {
             }
 
             var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
-            var sceneObject = EditorGUI.ObjectField(position, label, sceneAsset, typeof(SceneAsset), false);
-            if(sceneObject != sceneAsset) {
+            var newSceneAsset = EditorGUI.ObjectField(position, label, sceneAsset, typeof(SceneAsset), false);
+            if(newSceneAsset != sceneAsset) {
                 serializedDataChanged = true;
-                long localId;
-                if(!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sceneObject, out guid, out localId)) {
-                    Debug.LogError("Unable to get GUID for referenced scene asset.");
-                }
-                path = AssetDatabase.GUIDToAssetPath(guid);
+                path = AssetDatabase.GetAssetPath(newSceneAsset);
+                guid = AssetDatabase.AssetPathToGUID(path);
             }
 
             if(serializedDataChanged) {
                 property.FindPropertyRelative(guidPropertyName).stringValue = guid;
                 property.FindPropertyRelative(pathPropertyName).stringValue = path;
-
+                property.serializedObject.ApplyModifiedProperties();
             }
 
             EditorGUI.EndProperty();

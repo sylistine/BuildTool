@@ -9,11 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc79209339bdb3b4a95cc25b35049fdc, type: 3}
-  m_Name: BuildData
+  m_Name: BuildData 2
   m_EditorClassIdentifier: 
-  _name: DefaultBuildTarget
-  _startupLevel: {fileID: 11400000, guid: f6d2aa95836564647b9d7c127ce2ba50, type: 2}
+  _name: Level2
+  _startupLevel: {fileID: 11400000, guid: 1a2b6434dc961f945af7cc60f368242e, type: 2}
   _levelDataList:
-    _data:
-    - {fileID: 11400000, guid: ca617fb33c6cbd04b81f8d6ca5b69373, type: 2}
-    - {fileID: 11400000, guid: 1a2b6434dc961f945af7cc60f368242e, type: 2}
+    _data: []

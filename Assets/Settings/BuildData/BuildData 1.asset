@@ -3,16 +3,15 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc79209339bdb3b4a95cc25b35049fdc, type: 3}
   m_Name: BuildData 1
   m_EditorClassIdentifier: 
-  _name: NewBuildTarget
-  _startupLevel: {fileID: 0}
+  _name: Level1
+  _startupLevel: {fileID: 11400000, guid: ca617fb33c6cbd04b81f8d6ca5b69373, type: 2}
   _levelDataList:
     _data: []

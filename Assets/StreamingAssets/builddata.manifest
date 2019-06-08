@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 4021948302
+CRC: 3706733994
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 75381c3716f834f19185efe9a4b128a9
+    Hash: 0472b2c62b4a72ad8027aa7389c33e3c
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 7a71e70bf3906c13da7f04d2fd19d2e2
+    Hash: c30e4de18f481c96065d51964daaf65e
 HashAppended: 0
 ClassTypes:
 - Class: 114
@@ -16,6 +16,7 @@ ClassTypes:
 - Class: 115
   Script: {instanceID: 0}
 Assets:
-- Assets/Settings/BuildData/BuildData 1.asset
-- Assets/Scenes/Level2Data.asset
+- Assets/Levels/Level1/Level1Data.asset
+- Assets/Levels/Level2/Level2Data.asset
+- Assets/Settings/BuildData/BuildData.asset
 Dependencies: []

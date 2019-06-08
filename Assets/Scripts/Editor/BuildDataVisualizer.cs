@@ -21,8 +21,8 @@ namespace Djn.Builds {
 
         public void OnGUI(Rect position) {
             var nameProp = _buildData.FindProperty("_name");
-            var startupLevelSerialized = new SerializedObject(
-                _buildData.FindProperty("_startupLevel").objectReferenceValue);
+            var startupLevelProp = _buildData.FindProperty("_startupLevel");
+            var startupLevelSerialized = new SerializedObject(startupLevelProp.objectReferenceValue);
             var levelDataListProp =
                 _buildData.FindProperty("_levelDataList").FindPropertyRelative("_data");
 
@@ -36,11 +36,19 @@ namespace Djn.Builds {
             namePosition.height = EditorGUIUtility.singleLineHeight;
             EditorGUI.PropertyField(namePosition, nameProp, new GUIContent("Build Name"));
 
+            var startupLevelPosition = namePosition;
+            startupLevelPosition.y += namePosition.height;
+            EditorGUI.PropertyField(startupLevelPosition, startupLevelProp, false);
+
             var levelListGUI = new ListGUIUtil("Levels", levelDataListProp);
-            var levelsListPosition = namePosition;
+            var levelsListPosition = startupLevelPosition;
             levelsListPosition.height = levelListGUI.GetTotalHeight();
-            levelsListPosition.y += namePosition.height;
+            levelsListPosition.y += startupLevelPosition.height;
             levelListGUI.OnGUI(levelsListPosition);
+
+            if (EditorGUI.EndChangeCheck()) {
+              _buildData.ApplyModifiedProperties();
+            }
 
             // Level details column.
             var levelDetailsColumn = position;
@@ -50,10 +58,6 @@ namespace Djn.Builds {
                 levelDetailsColumn,
                 startupLevelSerialized,
                 new GUIContent("Startup Level"));
-
-            if(EditorGUI.EndChangeCheck()) {
-                _buildData.ApplyModifiedProperties();
-            }
             
             for(var i = 0; i < levelDataListProp.arraySize; ++i) {
                 var levelDataElement = levelDataListProp.GetArrayElementAtIndex(i).objectReferenceValue;
