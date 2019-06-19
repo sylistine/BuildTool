@@ -26,15 +26,18 @@ namespace Djn.Builds {
                 AssetDatabase.CreateFolder("Assets", "Settings");
             if(!AssetDatabase.IsValidFolder("Assets/Settings/BuildData"))
                 AssetDatabase.CreateFolder("Assets/Settings", "BuildData");
+            if (!AssetDatabase.IsValidFolder("Assets/Settings/BuildData/Editor"))
+                AssetDatabase.CreateFolder("Assets/Settings/BuildData", "Editor");
 
             // Create default level asset if it doesn't exist.
-            if(AssetDatabase.LoadAssetAtPath<LevelData>(DefaultLevelPath) != null) return;
-            var newLevel = CreateInstance<LevelData>();
-            AssetDatabase.CreateAsset(newLevel, DefaultLevelPath);
-            AssetDatabase.SaveAssets();
-            var serializedLevel = new SerializedObject(newLevel);
-            serializedLevel.FindProperty("_name").stringValue = "Default Startup Level";
-            serializedLevel.ApplyModifiedProperties();
+            if (AssetDatabase.LoadAssetAtPath<LevelData>(DefaultLevelPath) == null) {
+                var newLevel = CreateInstance<LevelData>();
+                AssetDatabase.CreateAsset(newLevel, DefaultLevelPath);
+                AssetDatabase.SaveAssets();
+                var serializedLevel = new SerializedObject(newLevel);
+                serializedLevel.FindProperty("_name").stringValue = "Default Startup Level";
+                serializedLevel.ApplyModifiedProperties();
+            }
         }
 
         private void OnGUI() {
@@ -64,12 +67,65 @@ namespace Djn.Builds {
             paddedPosition.x += 2f;
             paddedPosition.y += 2f;
 
-            var labelPosition = paddedPosition;
-            labelPosition.height = EditorGUIUtility.singleLineHeight;
-            EditorGUI.LabelField(labelPosition, new GUIContent("Build Targets"));
 
-            var newBuildDataButtonPosition = labelPosition;
-            newBuildDataButtonPosition.y += EditorGUIUtility.singleLineHeight;
+            var headerStyle = new GUIStyle();
+            headerStyle.fontSize = 14;
+            headerStyle.normal.textColor = Color.white;
+
+            var headerPadding = 6f;
+
+            // Platform options.
+            var insertPosition = paddedPosition;
+
+            insertPosition.height = 20f;
+            EditorGUI.LabelField(insertPosition, new GUIContent("Target Platform"), headerStyle);
+            insertPosition.y += insertPosition.height;
+
+            insertPosition.height = EditorGUIUtility.singleLineHeight;
+            var buildTarget = (BuildTarget)EditorGUI.EnumPopup(insertPosition, EditorUserBuildSettings.activeBuildTarget);
+            insertPosition.y += insertPosition.height;
+            if (buildTarget != EditorUserBuildSettings.activeBuildTarget) {
+                if (EditorUtility.DisplayDialog("Change Target Platform", "Switch platforms?", "Confirm", "Cancel")) {
+                    BuildTargetGroup targetGroup;
+                    switch(buildTarget) {
+                      case BuildTarget.Android:
+                        targetGroup = BuildTargetGroup.Android;
+                        break;
+                      default:
+                        targetGroup = BuildTargetGroup.Standalone;
+                        break;
+                    }
+                    if (EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroup, buildTarget)) {
+                        EditorUserBuildSettings.selectedBuildTargetGroup = targetGroup;
+                    }
+                }
+            }
+
+
+            insertPosition.y += headerPadding;
+            insertPosition.height = 20f;
+            EditorGUI.LabelField(insertPosition, new GUIContent("Build Options"), headerStyle);
+            insertPosition.y += insertPosition.height;
+
+            insertPosition.height = EditorGUIUtility.singleLineHeight;
+            EditorUserBuildSettings.development = EditorGUI.Toggle(
+                insertPosition, new GUIContent("Development Build"), EditorUserBuildSettings.development);
+            insertPosition.y += insertPosition.height;
+
+            EditorGUI.BeginDisabledGroup(!EditorUserBuildSettings.development);
+            EditorUserBuildSettings.allowDebugging = EditorGUI.Toggle(
+                insertPosition, new GUIContent("Script Debugging"), EditorUserBuildSettings.allowDebugging);
+            EditorGUI.EndDisabledGroup();
+            insertPosition.y += insertPosition.height;
+
+            // Build target list.
+            insertPosition.y += headerPadding;
+            insertPosition.height = 20f;
+            EditorGUI.LabelField(insertPosition, new GUIContent("Build Targets"), headerStyle);
+            insertPosition.y += insertPosition.height;
+
+            var newBuildDataButtonPosition = insertPosition;
+            newBuildDataButtonPosition.height = EditorGUIUtility.singleLineHeight;
             if (GUI.Button(newBuildDataButtonPosition, new GUIContent("+"))) {
                 CreateNewBuildData();
             }

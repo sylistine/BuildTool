@@ -14,12 +14,22 @@ namespace Djn.Builds {
             if(!data.IsValid) throw new ArgumentException();
 
             // Get build destination.
-            var dstPath = EditorUtility.SaveFilePanel("Select Build Destination", "", data.Name + ".exe", "exe");
+            var ext = "";
+            if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android) {
+                ext = "apk";
+            } else {
+                ext = "exe";
+            }
+            var dstPath = EditorUtility.SaveFilePanel("Select Build Destination", "", data.Name + "." + ext, ext);
             if (string.IsNullOrEmpty(dstPath)) {
+                Debug.Log("Build cancelled.");
                 return;
             }
-            
-            BuildPlayer(data, dstPath);
+
+            if (!BuildPlayer(data, dstPath)) {
+                Debug.LogWarning("Build player did not complete.");
+                return;
+            }
 
             var directoryPath = Path.GetDirectoryName(dstPath);
             var streamingPath = Path.Combine(
@@ -37,15 +47,22 @@ namespace Djn.Builds {
             System.Diagnostics.Process.Start("explorer.exe", directoryPath);
         }
 
-        private static void BuildPlayer(BuildData data, string dstPath) {
+        private static bool BuildPlayer(BuildData data, string dstPath) {
             // build with scene list and build options.
+            var buildOptions = BuildOptions.None;
+            if (EditorUserBuildSettings.development) buildOptions |= BuildOptions.Development;
+            if (EditorUserBuildSettings.development && EditorUserBuildSettings.allowDebugging) buildOptions |= BuildOptions.AllowDebugging;
+
             var buildPlayerOptions = new BuildPlayerOptions();
             buildPlayerOptions.locationPathName = dstPath;
-            // TODO: Should options be a popup after "Build" is clicked in a target?
-            buildPlayerOptions.options = BuildOptions.Development | BuildOptions.AllowDebugging;
+            buildPlayerOptions.options = buildOptions;
             buildPlayerOptions.scenes = data.CompleteSceneList.Select(x => x.Path).ToArray();
-            buildPlayerOptions.target = BuildTarget.StandaloneWindows64;
-            BuildPipeline.BuildPlayer(buildPlayerOptions);
+            buildPlayerOptions.target = EditorUserBuildSettings.activeBuildTarget;
+      
+            var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+            if (report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded) return true;
+            return false;
         }
 
         public static void BuildAssetBundle(BuildData data, string dstDir) {

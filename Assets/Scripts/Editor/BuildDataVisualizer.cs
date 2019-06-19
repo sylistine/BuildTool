@@ -31,15 +31,18 @@ namespace Djn.Builds {
 
             var generalDataColumnWidth = 360f;
 
+            // Build name.
             var namePosition = position;
             namePosition.width = generalDataColumnWidth;
             namePosition.height = EditorGUIUtility.singleLineHeight;
             EditorGUI.PropertyField(namePosition, nameProp, new GUIContent("Build Name"));
 
+            // Startup level.
             var startupLevelPosition = namePosition;
             startupLevelPosition.y += namePosition.height;
             EditorGUI.PropertyField(startupLevelPosition, startupLevelProp, false);
 
+            // Sub levels.
             var levelListGUI = new ListGUIUtil("Levels", levelDataListProp);
             var levelsListPosition = startupLevelPosition;
             levelsListPosition.height = levelListGUI.GetTotalHeight();
