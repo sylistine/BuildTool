@@ -97,6 +97,9 @@ namespace Djn.Builds {
                 }
 
                 private void Dispose(bool disposing) {
+                    if (_disposed) return;
+
+                    // Do disposal.
                     _disposed = true;
                 }
             }

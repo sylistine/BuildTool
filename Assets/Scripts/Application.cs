@@ -21,7 +21,10 @@ namespace Djn {
         public static void Init() {
             if(_inited) return;
 
-            var buildDataBundlePath = Path.Combine(UnityEngine.Application.streamingAssetsPath, "builddata");
+            var buildDataBundlePath = Path.Combine(
+              UnityEngine.Application.streamingAssetsPath,
+              "BuildDataAssetBundle",
+              "builddata");
             var buildDataBundle = AssetBundle.LoadFromFile(buildDataBundlePath);
             if(buildDataBundle == null) {
                 _inited = true;

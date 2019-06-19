@@ -8,6 +8,8 @@ using UnityEditor;
 namespace Djn.Builds {
     public static class BuildExecutor {
         public static void Build(BuildData data) {
+            Debug.Log("Building application.");
+
             if(data == null) throw new ArgumentNullException();
             if(!data.IsValid) throw new ArgumentException();
 
@@ -19,20 +21,23 @@ namespace Djn.Builds {
             
             BuildPlayer(data, dstPath);
 
+            var directoryPath = Path.GetDirectoryName(dstPath);
             var streamingPath = Path.Combine(
-                Path.GetDirectoryName(dstPath),
+                directoryPath,
                 Path.GetFileNameWithoutExtension(dstPath));
             streamingPath += "_Data";
-            streamingPath = Path.Combine(streamingPath, "StreamingAssets");
-            if(!Directory.Exists(streamingPath)) {
-                Directory.CreateDirectory(streamingPath);
+            streamingPath = Path.Combine(streamingPath, "StreamingAssets", "BuildDataAssetBundle");
+            if(Directory.Exists(streamingPath)) {
+                Directory.Delete(streamingPath, true);
             }
+            Directory.CreateDirectory(streamingPath);
 
             BuildAssetBundle(data, streamingPath);
+      
+            System.Diagnostics.Process.Start("explorer.exe", directoryPath);
         }
 
         private static void BuildPlayer(BuildData data, string dstPath) {
-            Debug.Log("Building player.");
             // build with scene list and build options.
             var buildPlayerOptions = new BuildPlayerOptions();
             buildPlayerOptions.locationPathName = dstPath;
@@ -44,12 +49,13 @@ namespace Djn.Builds {
         }
 
         public static void BuildAssetBundle(BuildData data, string dstDir) {
-            Debug.Log("Building asset bundles.");
             var bundleName = "builddata";
 
             //TODO: validate that build data and it's levels are real files.
 
             // Temporarily clear old BuildData bundle objects.
+            // TODO: This will build all assets with an assetbundle name.
+            // We should clear ALL bundle names so that we only build the builddata bundle.
             var originalBundleAssetPaths = AssetDatabase.GetAssetPathsFromAssetBundle(bundleName);
             foreach(var assetPath in originalBundleAssetPaths) {
                 var assetImporter = AssetImporter.GetAtPath(assetPath);

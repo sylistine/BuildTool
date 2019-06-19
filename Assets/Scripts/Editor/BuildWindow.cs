@@ -134,12 +134,16 @@ namespace Djn.Builds {
             // Set platform, scene list, and create BuildData for editor use.
             buttonRect.x += buttonRect.width;
             if(GUI.Button(buttonRect, new GUIContent("Enable Target"))) {
-                if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
-                    AssetDatabase.CreateFolder("Assets", "StreamingAssets");
-                //if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets/BuildData"))
-                //    AssetDatabase.CreateFolder("Assets/StreamingAssets", "BuildData");
+                var editorDataFolder = "Assets/StreamingAssets/BuildDataAssetBundle";
 
-                BuildExecutor.BuildAssetBundle(content, "Assets/StreamingAssets");
+                if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
+                  AssetDatabase.CreateFolder("Assets", "StreamingAssets");
+                if (AssetDatabase.IsValidFolder(editorDataFolder)) {
+                    FileUtil.DeleteFileOrDirectory("Assets/StreamingAssets/BuildDataAssetBundle");
+                }
+
+                AssetDatabase.CreateFolder("Assets/StreamingAssets", "BuildDataAssetBundle");
+                BuildExecutor.BuildAssetBundle(content, editorDataFolder);
 
                 var buildSettingsScenes = content.CompleteSceneList.Select(x =>
                     new EditorBuildSettingsScene(x.Path, true)
@@ -151,6 +155,7 @@ namespace Djn.Builds {
             buttonRect.x += buttonRect.width;
             if (GUI.Button(buttonRect, new GUIContent("Unload Asset Bundles"))) {
                 foreach(var bundle in AssetBundle.GetAllLoadedAssetBundles()) {
+                    Debug.Log("Unloading bundle.");
                     bundle.Unload(true);
                 }
             }
