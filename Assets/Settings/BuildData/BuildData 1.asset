@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc79209339bdb3b4a95cc25b35049fdc, type: 3}
+  m_Name: BuildData 1
+  m_EditorClassIdentifier: 
+  _name: NewBuildTarget2
+  _startupLevel: {fileID: 11400000, guid: f6d2aa95836564647b9d7c127ce2ba50, type: 2}
+  _levelDataList:
+    _data:
+    - {fileID: 11400000, guid: 1a2b6434dc961f945af7cc60f368242e, type: 2}
